@@ -1,0 +1,110 @@
+<!-- Validation failure messages -->
+<% if @restaurant.errors.any? %>
+  <% @restaurant.errors.full_messages.each do |message| %>
+    <div class="alert alert-dismissable alert-danger">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <%= message %>
+    </div>
+  <% end %>
+<% end %>
+
+<div class="page-header">
+  <h3>Edit Restaurant #<%= @restaurant.id %></h3>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <form action="/update_restaurant/<%= @restaurant.id %>" method="post">
+      <!-- Hidden input for authenticity token to protect from forgery -->
+      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+
+      <div class="form-group">
+        <label for="name" class="control-label">
+          Name
+        </label>
+
+        <input type="text" id="address" name="name" placeholder="Name" class="form-control" value="<%= @restaurant.name %>">
+      </div>
+
+
+      <!-- Label and input for address -->
+      <div class="form-group">
+        <label for="address" class="control-label">
+          Address
+        </label>
+
+        <input type="text" id="address" name="address" placeholder="Address" class="form-control" value="<%= @restaurant.address %>">
+      </div>
+
+      <!-- Label and input for zip -->
+      <div class="form-group">
+        <label for="zip" class="control-label">
+          Zip
+        </label>
+
+        <input type="text" id="zip" name="zip" placeholder="Zip" class="form-control" value="<%= @restaurant.zip %>">
+      </div>
+
+      <!-- Label and input for city -->
+      <div class="form-group">
+        <label for="city" class="control-label">
+          City
+        </label>
+
+        <input type="text" id="city" name="city" placeholder="City" class="form-control" value="<%= @restaurant.city %>">
+      </div>
+
+      <!-- Label and input for st -->
+      <div class="form-group">
+        <label for="st" class="control-label">
+          St
+        </label>
+
+        <input type="text" id="st" name="st" placeholder="St" class="form-control" value="<%= @restaurant.st %>">
+      </div>
+
+      <!-- Label and input for cuisine -->
+      <div class="form-group">
+        <label for="cuisine" class="control-label">
+          Cuisine
+        </label>
+
+        <input type="text" id="cuisine" name="cuisine" placeholder="Cuisine" class="form-control" value="<%= @restaurant.cuisine %>">
+      </div>
+
+      <!-- Label and input for cost -->
+      <div class="form-group">
+        <label for="cost" class="control-label">
+          Cost
+        </label>
+
+        <input type="text" id="cost" name="cost" placeholder="Cost" class="form-control" value="<%= @restaurant.cost %>">
+      </div>
+
+      <!-- Label and input for reservations -->
+      <div class="form-group">
+        <label for="reservations" class="control-label">
+          Reservations
+        </label>
+
+        <input type="text" id="reservations" name="reservations" placeholder="Reservations" class="form-control" value="<%= @restaurant.reservations %>">
+      </div>
+
+      <!-- Label and input for wifi -->
+      <div class="form-group">
+        <label for="wifi" class="control-label">
+          Wifi
+        </label>
+
+        <input type="text" id="wifi" name="wifi" placeholder="Wifi" class="form-control" value="<%= @restaurant.wifi %>">
+      </div>
+
+      <button class="btn btn-warning">
+        Update Restaurant
+      </button>
+      or
+      <a href="/restaurants/<%= @restaurant.id %>">Cancel</a>
+    </form>
+  </div>
+</div>
