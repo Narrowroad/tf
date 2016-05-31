@@ -9,25 +9,25 @@
   <div class="col-md-12">
     <table class="table table-striped table-hover">
       <tr>
-        <th>User</th>
+        <th>User_id</th>
         <th>Restaurant</th>
-        <th>Rating</th>
+        <th>Your Rating</th>
         <th>Comments</th>
         <th>Actions</th>
       </tr>
-
       <% @ratings.each do |rating| %>
-      <tr>
-        <td><%= rating.user_id %></td>
-        <td><%= rating.restaurant.name %></td>
-        <td><%= rating.rating %></td>
-        <td><%= rating.comments %></td>
-        <td>
-          <a href="/ratings/<%= rating.id %>" class="btn btn-primary">Show</a>
-          <a href="/ratings/<%= rating.id %>/edit" class="btn btn-warning">Edit</a>
-          <a href="/delete_rating/<%= rating.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
-        </td>
-      </tr>
+        <% if current_user.id == rating.user_id %>
+        <tr>
+          <td><%= rating.user_id %></td>
+          <td><%= rating.restaurant.name %></td>
+          <td><%= rating.rating %></td>
+          <td><%= rating.comments %></td>
+          <td>
+            <a href="/ratings/<%= rating.id %>/edit" class="btn btn-warning">Edit Rating/Comment</a>
+            <a href="/delete_rating/<%= rating.id %>" class="btn btn-danger" rel="nofollow">Remove Rating</a>
+          </td>
+        </tr>
+        <% end %>
       <% end %>
     </table>
   </div>

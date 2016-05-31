@@ -1,10 +1,16 @@
+<style>
+#map {
+  width: 500px;
+  height: 400px;
+}
+</style>
+
+
 <div class="page-header">
-  <h3>Restaurant #<%= @restaurant.id %></h3>
+  <h3><%= @restaurant.name %></h3>
 </div>
 
-<div class="row">
-  <div class="col-md-12">
-    <dl class="dl-horizontal">
+<dl class="dl-horizontal">
       <dt>Address</dt>
       <dd><%= @restaurant.address %></dd>
 
@@ -17,30 +23,60 @@
       <dt>St</dt>
       <dd><%= @restaurant.st %></dd>
 
-      <dt>Cuisine</dt>
-      <dd><%= @restaurant.cuisine %></dd>
-
-      <dt>Cost</dt>
-      <dd><%= @restaurant.cost %></dd>
-
-      <dt>Reservations</dt>
-      <dd><%= @restaurant.reservations %></dd>
 
       <dt>Wifi</dt>
       <dd><%= @restaurant.wifi %></dd>
 
+      <dt>Latitude</dt>
+      <dd><%=@lat%></dd>
+
+      <dt>Longitude</dt>
+      <dd><%=@lng%></dd>
+      <dt> User Comments </dt>
+
+      <dd>
+      <% @restaurant.ratings.each do |rating| %>
+          <% if rating.comments.length > 0 %>
+            "<%= rating.comments %>"
+          <% end %>
+      <% end %>
+      </dd>
+
+      <dt>Map Placeholder</dt>
+
+
     </dl>
 
-    <div class="btn-group btn-group-justified">
-      <a href="/restaurants" class="btn btn-primary">
-        Back
-      </a>
-      <a href="/restaurants/<%= @restaurant.id %>/edit" class="btn btn-warning">
-        Edit
-      </a>
-      <a href="/delete_restaurant/<%= @restaurant.id %>" class="btn btn-danger" rel="nofollow">
-        Delete
-      </a>
-    </div>
-  </div>
-</div>
+
+
+
+
+  <div id="map"></div>
+  <script>
+  function initMap() {
+    var mapDiv = document.getElementById('map');
+    var map = new google.maps.Map(mapDiv, {
+      center: {lat: <%= @lat %>, lng: <%= @lng %>},
+      zoom: 15
+    });
+
+
+    var infowindow = new google.maps.InfoWindow({
+      content: "<%= @restaurant.name %>"
+    });
+
+    var marker = new google.maps.Marker({
+      position: {lat: <%= @lat %>, lng: <%= @lng %>},
+      map: map,
+      title: '<%= @restaurant.name %>',
+      icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+    });
+
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+
+  };
+
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>

@@ -19,9 +19,9 @@ class RatingsController < ApplicationController
     @rating.comments = params[:comments]
 
     if @rating.save
-      redirect_to "/ratings", :notice => "Rating created successfully."
+      redirect_to "/restaurants", :notice => "Your rating was added! Tastefind is getting smarter!"
     else
-      render 'new'
+      redirect_to "/restaurants"
     end
   end
 
@@ -38,7 +38,7 @@ class RatingsController < ApplicationController
     @rating.comments = params[:comments]
 
     if @rating.save
-      redirect_to "/ratings", :notice => "Rating updated successfully."
+      redirect_to :back, :notice => "Your rating was updated! Tastefind is getting smarter!"
     else
       render 'edit'
     end

@@ -5,6 +5,9 @@ Rails.application.routes.draw do
 
   root 'recommendations#index'
 
+  # get "/users", :controller => "users", :action => "index"
+  # get "/users/:id", :controller => "users", :action => "details"
+
   get "/ratings/new", :controller => "ratings", :action => "new"
   post "/create_rating", :controller => "ratings", :action => "create"
 

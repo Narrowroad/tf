@@ -1,3 +1,7 @@
+require 'open-uri'
+require 'json'
+
+
 class RestaurantsController < ApplicationController
   def index
     @restaurants = Restaurant.all
@@ -5,6 +9,12 @@ class RestaurantsController < ApplicationController
 
   def show
     @restaurant = Restaurant.find(params[:id])
+    full_address = @restaurant.address + " " + @restaurant.zip.to_s
+    url_safe_street_address = URI.encode(full_address)
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + url_safe_street_address
+    parsed_data = JSON.parse(open(url).read)
+    @lat= parsed_data["results"][0]["geometry"]["location"]["lat"].to_s
+    @lng = parsed_data["results"][0]["geometry"]["location"]["lng"].to_s
   end
 
   def new

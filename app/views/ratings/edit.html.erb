@@ -9,7 +9,7 @@
 <% end %>
 
 <div class="page-header">
-  <h3>Edit Rating #<%= @rating.id %></h3>
+  <h3>Edit your rating for <%= @rating.restaurant.name %></h3>
 </div>
 
 <div class="row">
@@ -19,22 +19,8 @@
       <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
 
       <!-- Label and input for user_id -->
-      <div class="form-group">
-        <label for="user_id" class="control-label">
-          User
-        </label>
-
-        <input type="text" id="user_id" name="user_id" placeholder="User" class="form-control" value="<%= @rating.user_id %>">
-      </div>
-
-      <!-- Label and input for restaurant_id -->
-      <div class="form-group">
-        <label for="restaurant_id" class="control-label">
-          Restaurant
-        </label>
-
-        <input type="text" id="restaurant_id" name="restaurant_id" placeholder="Restaurant" class="form-control" value="<%= @rating.restaurant_id %>">
-      </div>
+      <input type="hidden"  name="user_id" value="<%= current_user.id%>">
+      <input type="hidden"  name="restaurant_id" value="<%= @rating.restaurant_id %>">
 
       <!-- Label and input for rating -->
       <div class="form-group">
@@ -54,11 +40,11 @@
         <textarea id="comments" name="comments" placeholder="Comments" class="form-control" rows="3"><%= @rating.comments %></textarea>
       </div>
 
-      <button class="btn btn-warning">
+      <button class="btn btn-success">
         Update Rating
       </button>
       or
-      <a href="/ratings/<%= @rating.id %>">Cancel</a>
+      <a href="/restaurants/">Back</a>
     </form>
   </div>
 </div>
