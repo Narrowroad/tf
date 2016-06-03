@@ -1,4 +1,8 @@
 source 'https://rubygems.org'
+
+gem "kaminari"
+
+gem "bootstrap-kaminari-views"
 gem 'devise'
 gem "starter_generators", :git => "http://github.com/raghubetina/starter_generators.git"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

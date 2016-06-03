@@ -1,7 +1,6 @@
 require 'open-uri'
 require 'json'
 
-
 class RestaurantsController < ApplicationController
   def index
     @restaurants = Restaurant.all
@@ -9,12 +8,7 @@ class RestaurantsController < ApplicationController
 
   def show
     @restaurant = Restaurant.find(params[:id])
-    full_address = @restaurant.address + " " + @restaurant.zip.to_s
-    url_safe_street_address = URI.encode(full_address)
-    url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + url_safe_street_address
-    parsed_data = JSON.parse(open(url).read)
-    @lat= parsed_data["results"][0]["geometry"]["location"]["lat"].to_s
-    @lng = parsed_data["results"][0]["geometry"]["location"]["lng"].to_s
+
   end
 
   def new
@@ -32,7 +26,12 @@ class RestaurantsController < ApplicationController
     @restaurant.cost = params[:cost]
     @restaurant.reservations = params[:reservations]
     @restaurant.wifi = params[:wifi]
-
+    full_address = @restaurant.address + " " + @restaurant.zip.to_s
+    url_safe_street_address = URI.encode(full_address)
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + url_safe_street_address
+    parsed_data = JSON.parse(open(url).read)
+    @restaurant.lat= parsed_data["results"][0]["geometry"]["location"]["lat"].to_s
+    @restaurant.lng = parsed_data["results"][0]["geometry"]["location"]["lng"].to_s
     if @restaurant.save
       redirect_to "/restaurants", :notice => "Restaurant created successfully."
     else
@@ -46,7 +45,6 @@ class RestaurantsController < ApplicationController
 
   def update
     @restaurant = Restaurant.find(params[:id])
-
     @restaurant.name = params[:name]
     @restaurant.address = params[:address]
     @restaurant.zip = params[:zip]
@@ -56,6 +54,12 @@ class RestaurantsController < ApplicationController
     @restaurant.cost = params[:cost]
     @restaurant.reservations = params[:reservations]
     @restaurant.wifi = params[:wifi]
+    full_address = @restaurant.address + " " + @restaurant.zip.to_s
+    url_safe_street_address = URI.encode(full_address)
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + url_safe_street_address
+    parsed_data = JSON.parse(open(url).read)
+    @restaurant.lat= parsed_data["results"][0]["geometry"]["location"]["lat"].to_s
+    @restaurant.lng = parsed_data["results"][0]["geometry"]["location"]["lng"].to_s
 
     if @restaurant.save
       redirect_to "/restaurants", :notice => "Restaurant updated successfully."

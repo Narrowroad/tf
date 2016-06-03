@@ -1,47 +1,109 @@
+<style>
+#map {
+  width: 800px;
+  height: 600px;
+}
+</style>
+
 <div class="page-header">
   <h1>
     Restaurants
-
   </h1>
 </div>
 
+<div class="col-lg-10 col-lg-offset-1">
+  <div id="map"></div>
+  <script>
+  function initMap() {
+    // initiate a new map
+    var mapDiv = document.getElementById('map');
+    var map = new google.maps.Map(mapDiv);
 
-<div class="row row-horizon">
+    // An empty bounds variable for seeting automatic zoom level (bounds of map)
+    var bounds = new google.maps.LatLngBounds();
+
+    <%  @restaurants.each do |restaurant|   %>
+
+    // Make info window for this place
+    var infowindow_<%= restaurant.id %> = new google.maps.InfoWindow({
+      content: "<b><%= restaurant.name %></b>"  +
+      "<li><%= restaurant.address %> </li>" +
+      "<li> Predicted rating: <%= restaurant.ratings.average('rating') %></li> "
+    });
+
+    // Make marker for this place
+    var marker_<%= restaurant.id %> = new google.maps.Marker({
+      position: {lat: <%= restaurant.lat %>, lng: <%= restaurant.lng %>},
+      map: map,
+      title: "<%= restaurant.name %>",
+      icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+    });
+
+    // Click to show info window
+    marker_<%= restaurant.id %>.addListener('click', function() {
+      infowindow_<%= restaurant.id %>.open(map, marker_<%= restaurant.id %>);
+    });
+
+    // Rightclick to edit place
+    // marker_<%= restaurant.id %>.addListener('rightclick', function() {
+    //   window.location.href = 'http://localhost:3000/restaurants/<%= restaurant.id %>/edit'
+    //
+    // });
+
+    // Add this marker in map bounds
+    bounds.extend(new google.maps.LatLng(<%= restaurant.lat %>, <%= restaurant.lng %>));
+
+    <% end %>
+
+    // Size map to fit bounds
+    map.fitBounds(bounds);
+  };
+
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+  async defer></script>
+</div>
+
+
+
+<div class="row row-horizon form-inline">
   <% @restaurants.each do |restaurant| %>
   <div class="col-md-3">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h5> <a href="/restaurants/<%= restaurant.id %>"><%= restaurant.name %></a></h5>
+        <h4> <a href="/restaurants/<%= restaurant.id %>"><%= restaurant.name %></a></h4>
       </div>
       <div class="panel-body">
         <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) %>
-        <div>
+        <div "col-md-3">
           <a href="/ratings/<%= restaurant.ratings.where({:user_id => current_user.id}).pluck(:id)[0] %>/edit">
-          Your Rating: <%= restaurant.ratings.where({:user_id => current_user.id}).pluck(:rating)[0]%>
+            <h4>Your Rating: <%= restaurant.ratings.where({:user_id => current_user.id}).pluck(:rating)[0]%> </h4>
           </a>
         </div>
         <% else %>
         <div>
           <form action="/create_rating" method="post">
-            <!-- Hidden input for authenticity token to protect from forgery -->
             <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-            <!-- Label and input for user_id -->
             <input type="hidden"  name="user_id" value="<%= current_user.id%>">
             <input type="hidden"  name="restaurant_id" value="<%= restaurant.id%>">
             <input type="text" id="rating" name="rating" placeholder="Rate from 1-5" class="form-control">
             <input type="hidden"  name="comments" value="">
-            <!-- Label and input for comments -->
+
             <button class="btn btn-success btn-sm">
-              Add
+              Rate!
             </button>
           </div>
+          <a href="/delete_restaurant/<%= restaurant.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
           <% end %>
+
           <hr>
           <div>
-            <% if restaurant.ratings.count > 0 %>
-              Tastefind Average: <%= restaurant.ratings.average('rating').round(1) %>
+            <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) == false %>
+            <% if restaurant.recommendations.average('rating_rec') == nil %>
+            No recommendation at this time!
             <% else %>
-              No ratings yet!
+            TasteFind Rating: <%= restaurant.recommendations.average('rating_rec').round(1) %>
+            <% end %>
             <% end %>
           </div>
         </div>
@@ -52,8 +114,8 @@
     <div class="col-md-3">
       <div class="panel panel-default">
         <div class="panel-heading">
-        <a href="/restaurants/new" class="btn btn-md btn-success">Add Restaurant</a>
-      </div>
+          <a href="/restaurants/new" class="btn btn-md btn-success">Add Restaurant</a>
+        </div>
       </div>
     </div>
   </div>
