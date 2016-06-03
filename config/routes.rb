@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   # Routes for the Rating resource:
   # CREATE
 
-  root 'recommendations#index'
+  root 'restaurants#index'
 
   # get "/users", :controller => "users", :action => "index"
   # get "/users/:id", :controller => "users", :action => "details"

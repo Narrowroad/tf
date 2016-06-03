@@ -1,7 +1,7 @@
 <style>
 #map {
   width: 800px;
-  height: 600px;
+  height: 700px;
 }
 </style>
 
@@ -10,8 +10,10 @@
     Restaurants
   </h1>
 </div>
-
-<div class="col-lg-10 col-lg-offset-1">
+<div class="col-md-12 text-center">
+<h4><%= paginate @restaurants , :window => 0 %> </h4>
+</div>
+<div class="col-md-9">
   <div id="map"></div>
   <script>
   function initMap() {
@@ -28,7 +30,8 @@
     var infowindow_<%= restaurant.id %> = new google.maps.InfoWindow({
       content: "<b><%= restaurant.name %></b>"  +
       "<li><%= restaurant.address %> </li>" +
-      "<li> Predicted rating: <%= restaurant.ratings.average('rating') %></li> "
+      "<li> Predicted rating: <%= restaurant.ratings.average('rating') %></li> " +
+      "<li> Cuisine: <%= restaurant.cuisine %></li> "
     });
 
     // Make marker for this place
@@ -64,20 +67,25 @@
   async defer></script>
 </div>
 
-
-
 <div class="row row-horizon form-inline">
   <% @restaurants.each do |restaurant| %>
   <div class="col-md-3">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h4> <a href="/restaurants/<%= restaurant.id %>"><%= restaurant.name %></a></h4>
+        <h5>
+          <a href="/restaurants/<%= restaurant.id %>">
+          <%= restaurant.name %>,
+          <% restaurant.cost.to_i.times do %>
+            <i class="fa fa-usd" aria-hidden="true"></i>
+          <% end %>
+          </a>
+        </h5>
       </div>
       <div class="panel-body">
         <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) %>
         <div "col-md-3">
           <a href="/ratings/<%= restaurant.ratings.where({:user_id => current_user.id}).pluck(:id)[0] %>/edit">
-            <h4>Your Rating: <%= restaurant.ratings.where({:user_id => current_user.id}).pluck(:rating)[0]%> </h4>
+            <h6>Your Rating: <%= restaurant.ratings.where({:user_id => current_user.id}).pluck(:rating)[0]%> </h6>
           </a>
         </div>
         <% else %>
@@ -86,36 +94,29 @@
             <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
             <input type="hidden"  name="user_id" value="<%= current_user.id%>">
             <input type="hidden"  name="restaurant_id" value="<%= restaurant.id%>">
-            <input type="text" id="rating" name="rating" placeholder="Rate from 1-5" class="form-control">
+            <input type="text" name="rating" placeholder="Rate from 1-5" class="form-control">
             <input type="hidden"  name="comments" value="">
-
             <button class="btn btn-success btn-sm">
               Rate!
             </button>
+          </form>
           </div>
-          <a href="/delete_restaurant/<%= restaurant.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
+          <!-- <a href="/delete_restaurant/<%= restaurant.id %>" class="btn btn-danger" rel="nofollow">Delete</a> -->
           <% end %>
-
           <hr>
           <div>
             <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) == false %>
-            <% if restaurant.recommendations.average('rating_rec') == nil %>
-            No recommendation at this time!
-            <% else %>
-            TasteFind Rating: <%= restaurant.recommendations.average('rating_rec').round(1) %>
-            <% end %>
+              <% if restaurant.recommendations.average('rating_rec') == nil %>
+                No recommendation at this time!
+              <% else %>
+                TasteFind Rating: <%= restaurant.recommendations.average('rating_rec').round(1) %>
+              <% end %>
             <% end %>
           </div>
         </div>
       </div>
     </div>
     <% end %>
-    <hr>
-    <div class="col-md-3">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <a href="/restaurants/new" class="btn btn-md btn-success">Add Restaurant</a>
-        </div>
-      </div>
-    </div>
+
+
   </div>

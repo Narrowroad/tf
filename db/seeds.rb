@@ -8,6 +8,7 @@ csv.each do |row|
  t.name = row['name']
  t.cost = row['cost']
  t.address = row['address']
+ t.cuisine = row['cuisine']
  t.city = row['city']
  t.st = row['st']
  t.zip = row['zip']

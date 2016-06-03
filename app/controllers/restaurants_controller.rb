@@ -4,6 +4,8 @@ require 'json'
 class RestaurantsController < ApplicationController
   def index
     @restaurants = Restaurant.all
+    @restaurants = Restaurant.order("name")
+    @restaurants = Kaminari.paginate_array(@restaurants).page(params[:page]).per(4)
   end
 
   def show
