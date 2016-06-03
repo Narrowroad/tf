@@ -38,7 +38,7 @@ class RatingsController < ApplicationController
     @rating.comments = params[:comments]
 
     if @rating.save
-      redirect_to :back, :notice => "Your rating was updated! Tastefind is getting smarter!"
+      redirect_to "/ratings", :notice => "Your rating was updated! Tastefind is getting smarter!"
     else
       render 'edit'
     end

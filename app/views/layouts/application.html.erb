@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Tf</title>
+  <title>TasteFind</title>
 
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/united/bootstrap.min.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -12,6 +12,11 @@
     body {
       padding-top: 60px;
     }
+
+  .container-full {
+  margin: 0 auto;
+  width: 100%;
+  }
   </style>
 
   <%= stylesheet_link_tag    "application", :media => "all" %>
@@ -40,9 +45,10 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          <li><a href="/ratings">Ratings</a></li>
+          <li><a href="/restaurants">Find Restaurants</a></li>
+          <li><a href="/ratings">See Your Ratings</a></li>
           <li><a href="/recommendations">Recommendations</a></li>
-          <li><a href="/restaurants">Restaurants</a></li>
+
 
         </ul>
 
@@ -64,7 +70,7 @@
             Sign Up
           </a></li>
           <li><a href="/users/sign_in">
-            Sign in
+            Log in
           </a></li>
         </ul>
         <% end %>

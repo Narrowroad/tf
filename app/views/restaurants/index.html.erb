@@ -11,7 +11,7 @@
   </h1>
 </div>
 <div class="col-md-12 text-center">
-<h4><%= paginate @restaurants , :window => 0 %> </h4>
+  <h4><%= paginate @restaurants , :window => 0 %> </h4>
 </div>
 <div class="col-md-9">
   <div id="map"></div>
@@ -30,7 +30,7 @@
     var infowindow_<%= restaurant.id %> = new google.maps.InfoWindow({
       content: "<b><%= restaurant.name %></b>"  +
       "<li><%= restaurant.address %> </li>" +
-      "<li> Predicted rating: <%= restaurant.ratings.average('rating') %></li> " +
+      "<li> Average rating: <%= restaurant.ratings.average('rating') %></li> " +
       "<li> Cuisine: <%= restaurant.cuisine %></li> "
     });
 
@@ -69,18 +69,16 @@
 
 <div class="row row-horizon form-inline">
   <% @restaurants.each do |restaurant| %>
-  <div class="col-md-3">
+  <div class="col-sm-3">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h5>
           <a href="/restaurants/<%= restaurant.id %>">
-          <%= restaurant.name %>,
-          <% restaurant.cost.to_i.times do %>
-            <i class="fa fa-usd" aria-hidden="true"></i>
-          <% end %>
+            <%= restaurant.name %>
           </a>
         </h5>
       </div>
+
       <div class="panel-body">
         <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) %>
         <div "col-md-3">
@@ -100,23 +98,35 @@
               Rate!
             </button>
           </form>
+        </div>
+        <!-- <a href="/delete_restaurant/<%= restaurant.id %>" class="btn btn-danger" rel="nofollow">Delete</a> -->
+        <% end %>
+        <hr>
+        <div class="col-sm-3">
+          <p>
+          Cost <% restaurant.cost.to_i.times do %>
+            <i class="fa fa-usd" aria-hidden="true"></i>
+            <% end %></p>
+        </div>
+
+        <div>
+          <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) == false %>
+          <% if restaurant.recommendations.average('rating_rec') == nil %>
+          No recommendation at this time!
+          <% else %>
+          <ul>
+            <li>TasteFind Rating: <%= restaurant.recommendations.average('rating_rec').round(1) %></li>
+
+          </ul>
+
           </div>
-          <!-- <a href="/delete_restaurant/<%= restaurant.id %>" class="btn btn-danger" rel="nofollow">Delete</a> -->
           <% end %>
-          <hr>
-          <div>
-            <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) == false %>
-              <% if restaurant.recommendations.average('rating_rec') == nil %>
-                No recommendation at this time!
-              <% else %>
-                TasteFind Rating: <%= restaurant.recommendations.average('rating_rec').round(1) %>
-              <% end %>
-            <% end %>
-          </div>
+          <% end %>
         </div>
       </div>
     </div>
-    <% end %>
-
-
   </div>
+  <% end %>
+
+
+</div>

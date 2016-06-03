@@ -9,19 +9,19 @@
   <div class="col-md-12">
     <table class="table table-striped table-hover">
       <tr>
-        <th>User_id</th>
+
         <th>Restaurant</th>
-        <th>Your Rating</th>
-        <th>Comments</th>
+        <th class="text-center">Your Rating</th>
+        <th class="text-center">Comments</th>
         <th>Actions</th>
       </tr>
       <% @ratings.each do |rating| %>
         <% if current_user.id == rating.user_id %>
         <tr>
-          <td><%= rating.user_id %></td>
-          <td><%= rating.restaurant.name %></td>
-          <td><%= rating.rating %></td>
-          <td><%= rating.comments %></td>
+
+          <td><%= rating.restaurant.try(:name)%></td>
+          <td class="text-center"><%= rating.try(:rating) %></td>
+          <td><%= rating.try(:comments) %></td>
           <td>
             <a href="/ratings/<%= rating.id %>/edit" class="btn btn-warning">Edit Rating/Comment</a>
             <a href="/delete_rating/<%= rating.id %>" class="btn btn-danger" rel="nofollow">Remove Rating</a>
