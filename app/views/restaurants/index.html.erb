@@ -89,7 +89,16 @@
 
   <!-- 1-5 Ratings -->
         <div class="btn-group">
-          <form id="rate1" action="/create_rating" method="post">
+          <%= link_to "1", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>1), :class => "btn btn-success btn-sm", :method => :post %>
+          <%= link_to "2", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>2), :class => "btn btn-success btn-sm", :method => :post %>
+          <%= link_to "3", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>3), :class => "btn btn-success btn-sm", :method => :post %>
+          <%= link_to "4", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>4), :class => "btn btn-success btn-sm", :method => :post %>
+          <%= link_to "5", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>5), :class => "btn btn-success btn-sm", :method => :post %>
+          </div>
+
+
+
+          <!-- <form action="/create_rating" method="post">
             <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
             <input type="hidden"  name="user_id" value="<%= current_user.id%>">
             <input type="hidden"  name="restaurant_id" value="<%= restaurant.id%>">
@@ -132,8 +141,8 @@
             <input type="hidden"  name="rating" value="5">
             <input type="hidden"  name="comments" value="">
             <button class="btn btn-success btn-sm">5</button>
-          </form>
-        </div>
+          </form> -->
+
         <!-- <a href="/delete_restaurant/<%= restaurant.id %>" class="btn btn-danger" rel="nofollow">Delete</a> -->
         <% end %>
         <hr>
