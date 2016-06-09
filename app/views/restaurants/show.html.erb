@@ -1,74 +1,98 @@
 <style>
 #map {
-  width: 600px;
+  width: 100%;
   height: 600px;
 }
 </style>
 
-<div class="col-lg-4">
-<div class="page-header">
-  <h3><%= @restaurant.name %></h3>
-</div>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="page-header">
+      <h3 class="text-center"><%= @restaurant.name %></h3>
+    </div>
 
-<dl class="dl-horizontal">
+    <dl class="dl-horizontal">
       <dt>Address</dt>
-        <dd><%= @restaurant.address %>, <%= @restaurant.zip %> </dd>
-      <dt>Cuisine</dt>
-        <dd><%= @restaurant.cuisine %></dd>
+      <dd><%= @restaurant.address %>, <%= @restaurant.zip %> </dd>
       <dt>Cost</dt>
-        <dd>
-      <% @restaurant.cost.to_i.times do %>
+      <dd>
+        <% @restaurant.cost.to_i.times do %>
         <i class="fa fa-usd" aria-hidden="true"></i>
-      <% end %>
-        </dd>
+        <% end %>
+      </dd>
 
-      <dt>Lat Lng</dt>
-        <dd>
-    <%=       @restaurant.lat %>, <%= @restaurant.lng %>
-        </dd>
+      <dt>Tastefind Rating</dt>
+      <dd>
+
+        <% if @restaurant.ratings.average('rating') == nil %>
+          This restaurant has not been rated!
+        <% else %>
+          <% h=@restaurant.ratings.average('rating').round(0).to_i %>
+
+          <% h.times do %>
+          <i class="fa fa-heart" aria-hidden="true"></i>
+          <% end %>
+
+          <% t=5-h %>
+          <% t.times do %>
+          <i class="fa fa-heart-o" aria-hidden="true"></i>
+          <% end %>
+
+        <% end %>
+
+
+      </dd>
 
       <dt> User Comments </dt>
 
       <dd>
+
       <% @restaurant.ratings.each do |rating| %>
-          <% if rating.comments.length > 0 %>
-            "<%= rating.comments %>"
-          <% end %>
+
+        <% if rating.comments == nil %>
+      
+
+        <% else %>
+              <% if rating.comments.length > 0 %>
+              "<%= rating.comments %>"
+              <% end %>
+        <% end %>
       <% end %>
       </dd>
 
     </dl>
 
-</div>
+  </div>
 
-<div class="col-lg-6">
-  <div id="map"></div>
-  <script>
-  function initMap() {
-    var mapDiv = document.getElementById('map');
-    var map = new google.maps.Map(mapDiv, {
-      center: {lat: <%= @restaurant.lat %>, lng: <%= @restaurant.lng %>},
-      zoom: 15
-    });
+  <div class="col-lg-6">
+    <div id="map"></div>
+    <script>
+    function initMap() {
+      var mapDiv = document.getElementById('map');
+      var map = new google.maps.Map(mapDiv, {
+        center: {lat: <%= @restaurant.lat %>, lng: <%= @restaurant.lng %>},
+        zoom: 15
+      });
 
-    var infowindow = new google.maps.InfoWindow({
-      content: "<%= @restaurant.name %>"
-    });
+      var infowindow = new google.maps.InfoWindow({
+        content: "<%= @restaurant.name %>"
+      });
 
-    var marker = new google.maps.Marker({
-      position: {lat: <%= @restaurant.lat %>, lng: <%= @restaurant.lng %>},
-      map: map,
-      title: '<%= @restaurant.name %>',
-      icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
-    });
+      var marker = new google.maps.Marker({
+        position: {lat: <%= @restaurant.lat %>, lng: <%= @restaurant.lng %>},
+        map: map,
+        title: '<%= @restaurant.name %>',
+        icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+      });
 
-    marker.addListener('click', function() {
-      infowindow.open(map, marker);
-    });
+      marker.addListener('click', function() {
+        infowindow.open(map, marker);
+      });
 
-  };
+    };
 
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
 
+  </div>
 </div>

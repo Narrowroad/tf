@@ -1,7 +1,6 @@
 <div class="page-header">
   <h1>
-    Ratings
-    <a href="/ratings/new" class="btn btn-lg btn-success">New Rating</a>
+    Your Ratings
   </h1>
 </div>
 
@@ -19,13 +18,32 @@
         <% if current_user.id == rating.user_id %>
         <tr>
 
-          <td><%= rating.restaurant.try(:name)%></td>
-          <td class="text-center"><%= rating.try(:rating) %></td>
+          <td>
+            <a href="/restaurants/<%= rating.restaurant.id %>">
+
+            <%= rating.restaurant.try(:name)%>
+          </a>
+          </td>
+
+          <td>
+                <!-- Show full hearts for rating -->
+                <% rating.try(:rating).times do %>
+                <i class="fa fa-heart" aria-hidden="true"></i>
+                <% end %>
+                <!-- Show empty hearts to fill in the rest -->
+                <% t=5-rating.try(:rating) %>
+                <% t.times do %>
+                <i class="fa fa-heart-o" aria-hidden="true"></i>
+                <% end %>
+          </td>
+
           <td><%= rating.try(:comments) %></td>
+
           <td>
             <a href="/ratings/<%= rating.id %>/edit" class="btn btn-warning">Edit Rating/Comment</a>
             <a href="/delete_rating/<%= rating.id %>" class="btn btn-danger" rel="nofollow">Remove Rating</a>
           </td>
+
         </tr>
         <% end %>
       <% end %>

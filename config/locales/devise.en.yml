@@ -65,9 +65,9 @@ en:
   views:
     pagination:
       first: "&laquo; Top Recommendations"
-      last: "Worst Recommendations &raquo;"
-      previous: "&lsaquo; Previous Restaurants"
-      next: "More Recommendations &rsaquo;"
+      last: "Last &raquo;"
+      previous: "&lsaquo; Previous"
+      next: "More &rsaquo;"
       truncate: "&hellip;"
   helpers:
     page_entries_info:

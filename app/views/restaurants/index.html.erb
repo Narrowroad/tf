@@ -1,19 +1,95 @@
-<style>
-#map {
-  width: 100%;
-  height: 700px;
-}
-</style>
 
-<div class="page-header">
-  <h1>
-    Restaurants
-  </h1>
-</div>
+
 <div class="col-md-12 text-center">
   <h4><%= paginate @restaurants , :window => 0 %> </h4>
 </div>
-<div class="col-md-9">
+
+<div class="row">
+  <% @restaurants.each do |restaurant| %>
+  <div class="col-md-3">
+
+    <div class="panel panel-default">
+
+      <div class="panel-heading">
+        <h5>
+          <a href="/restaurants/<%= restaurant.id %>">
+            <%= restaurant.name %>
+          </a>
+          <% restaurant.cost.to_i.times do %>
+          <i class="fa fa-usd" aria-hidden="true"></i>
+          <% end %>
+        </h5>
+      </div>
+
+      <div class="panel-body">
+        <!-- if they have rated the resturant, diplay their rating -->
+        <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) %>
+        <div>
+          <a href="/ratings/<%= restaurant.ratings.where({:user_id => current_user.id}).pluck(:id)[0] %>/edit">
+            <h6>Your Rating:
+              <!-- Show full hearts for rating -->
+              <% restaurant.ratings.where({:user_id => current_user.id}).pluck(:rating)[0].times do %>
+              <i class="fa fa-heart" aria-hidden="true"></i>
+              <% end %>
+              <!-- Show empty hearts to fill in the rest -->
+              <% t=5-restaurant.ratings.where({:user_id => current_user.id}).pluck(:rating)[0] %>
+              <% t.times do %>
+              <i class="fa fa-heart-o" aria-hidden="true"></i>
+              <% end %>
+            </h6>
+          </a>
+        </div>
+        <% else %>
+
+        <!-- If they have not rated the restaurant, give them 1-5 Ratings choices to rate -->
+        <div class="btn-groupn text-center">
+          <h6 class="text-center">Rate this restaurant!</h6>
+          <%= link_to "1", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>1), :class => "btn btn-sm btn-primary", :method => :post %>
+          <%= link_to "2", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>2), :class => "btn btn-primary btn-sm", :method => :post %>
+          <%= link_to "3", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>3), :class => "btn btn-primary btn-sm", :method => :post %>
+          <%= link_to "4", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>4), :class => "btn btn-primary btn-sm", :method => :post %>
+          <%= link_to "5", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>5), :class => "btn btn-primary btn-sm", :method => :post %>
+        </div>
+        <!-- <a href="/delete_restaurant/<%= restaurant.id %>" class="btn btn-danger" rel="nofollow">Delete Restaurant</a> -->
+        <% end %>
+
+
+        <!-- Show average ratings if user hasn't rated the restaurant -->
+          <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) == false %>
+          <hr>
+        <!-- check to see if restaurant has been rated in database -->
+
+                <% if restaurant.ratings.average('rating') == nil %>
+                <p>
+                  This restaurant has not been rated!
+                </p>
+                <% else %>
+              <!-- show average rating -->
+                <h6>Tastefind Rating:
+
+                  <% h=restaurant.ratings.average('rating').round(0).to_i %>
+                  <% h.times do %>
+                  <i class="fa fa-heart" aria-hidden="true"></i>
+                  <% end %>
+
+                  <% t=5-h %>
+                  <% t.times do %>
+                  <i class="fa fa-heart-o" aria-hidden="true"></i>
+                  <% end %>
+
+                </h6>
+                <% end %>
+
+          <% end %>
+      </div>
+
+    </div>
+  </div>
+  <% end %>
+</div>
+
+
+<div class="col-md-12">
   <div id="map"></div>
   <script>
   function initMap() {
@@ -29,8 +105,8 @@
     // Make info window for this place
     var infowindow_<%= restaurant.id %> = new google.maps.InfoWindow({
       content: "<b><%= restaurant.name %></b>"  +
-      "<li><%= restaurant.address %> </li>" +
-      "<li> Average rating: <%= restaurant.ratings.average('rating') %></li> "
+      "<p><%= restaurant.address %> </p>" +
+      "<p> Tastefind rating: <%= restaurant.ratings.average('rating') %></p> "
     });
 
     // Make marker for this place
@@ -64,113 +140,4 @@
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
   async defer></script>
-</div>
-
-<div class="row row-horizon form-inline">
-  <% @restaurants.each do |restaurant| %>
-  <div class="col-sm-3">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h5>
-          <a href="/restaurants/<%= restaurant.id %>">
-            <%= restaurant.name %>
-          </a>
-        </h5>
-      </div>
-
-      <div class="panel-body">
-        <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) %>
-        <div "col-md-3">
-          <a href="/ratings/<%= restaurant.ratings.where({:user_id => current_user.id}).pluck(:id)[0] %>/edit">
-            <h6>Your Rating: <%= restaurant.ratings.where({:user_id => current_user.id}).pluck(:rating)[0]%> </h6>
-          </a>
-        </div>
-        <% else %>
-
-  <!-- 1-5 Ratings -->
-        <div class="btn-group">
-          <%= link_to "1", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>1), :class => "btn btn-success btn-sm", :method => :post %>
-          <%= link_to "2", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>2), :class => "btn btn-success btn-sm", :method => :post %>
-          <%= link_to "3", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>3), :class => "btn btn-success btn-sm", :method => :post %>
-          <%= link_to "4", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>4), :class => "btn btn-success btn-sm", :method => :post %>
-          <%= link_to "5", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>5), :class => "btn btn-success btn-sm", :method => :post %>
-          </div>
-
-
-
-          <!-- <form action="/create_rating" method="post">
-            <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-            <input type="hidden"  name="user_id" value="<%= current_user.id%>">
-            <input type="hidden"  name="restaurant_id" value="<%= restaurant.id%>">
-            <input type="hidden"  name="rating" value="1">
-            <input type="hidden"  name="comments" value="">
-            <button class="btn btn-success btn-sm">1</button>
-          </form>
-
-          <form action="/create_rating" method="post">
-            <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-            <input type="hidden"  name="user_id" value="<%= current_user.id%>">
-            <input type="hidden"  name="restaurant_id" value="<%= restaurant.id%>">
-            <input type="hidden"  name="rating" value="2">
-            <input type="hidden"  name="comments" value="">
-            <button class="btn btn-success btn-sm">2</button>
-          </form>
-
-          <form action="/create_rating" method="post">
-            <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-            <input type="hidden"  name="user_id" value="<%= current_user.id%>">
-            <input type="hidden"  name="restaurant_id" value="<%= restaurant.id%>">
-            <input type="hidden"  name="rating" value="3">
-            <input type="hidden"  name="comments" value="">
-            <button class="btn btn-success btn-sm">3</button>
-          </form>
-
-          <form action="/create_rating" method="post">
-            <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-            <input type="hidden"  name="user_id" value="<%= current_user.id%>">
-            <input type="hidden"  name="restaurant_id" value="<%= restaurant.id%>">
-            <input type="hidden"  name="rating" value="4">
-            <input type="hidden"  name="comments" value="">
-            <button class="btn btn-success btn-sm">4</button>
-          </form>
-
-          <form action="/create_rating" method="post">
-            <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-            <input type="hidden"  name="user_id" value="<%= current_user.id%>">
-            <input type="hidden"  name="restaurant_id" value="<%= restaurant.id%>">
-            <input type="hidden"  name="rating" value="5">
-            <input type="hidden"  name="comments" value="">
-            <button class="btn btn-success btn-sm">5</button>
-          </form> -->
-
-        <!-- <a href="/delete_restaurant/<%= restaurant.id %>" class="btn btn-danger" rel="nofollow">Delete</a> -->
-        <% end %>
-        <hr>
-        <div class="col-sm-3">
-          <p>
-          Cost <% restaurant.cost.to_i.times do %>
-            <i class="fa fa-usd" aria-hidden="true"></i>
-            <% end %></p>
-        </div>
-
-        <div>
-          <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) == false %>
-          <% if restaurant.recommendations.average('rating_rec') == nil %>
-          No recommendation at this time!
-          <% else %>
-          <ul>
-            <li>TasteFind Rating: <%= restaurant.recommendations.average('rating_rec').round(1) %></li>
-
-          </ul>
-
-          </div>
-          <% end %>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
-  <% end %>
-
-
 </div>

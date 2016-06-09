@@ -1,7 +1,9 @@
 require 'open-uri'
 require 'json'
 require 'csv'
-csv_text = File.read(Rails.root.join('lib', 'seeds', 'restaurants1.csv'))
+
+
+csv_text = File.read(Rails.root.join('lib', 'seeds', 'restaurants2.csv'))
 csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
 csv.each do |row|
  t = Restaurant.new
