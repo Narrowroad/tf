@@ -4,6 +4,7 @@
   <h4><%= paginate @restaurants , :window => 0 %> </h4>
 </div>
 
+
 <div class="row">
   <% @restaurants.each do |restaurant| %>
   <div class="col-md-3">
@@ -55,32 +56,31 @@
 
 
         <!-- Show average ratings if user hasn't rated the restaurant -->
-          <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) == false %>
-          <hr>
+
+        <hr>
         <!-- check to see if restaurant has been rated in database -->
 
-                <% if restaurant.ratings.average('rating') == nil %>
-                <p>
-                  This restaurant has not been rated!
-                </p>
-                <% else %>
-              <!-- show average rating -->
-                <h6>Tastefind Rating:
+        <% if restaurant.ratings.average('rating') == nil %>
+        <p>
+          This restaurant has not been rated!
+        </p>
+        <% else %>
+        <!-- show average rating -->
+        <h6>Tastefind Rating:
 
-                  <% h=restaurant.ratings.average('rating').round(0).to_i %>
-                  <% h.times do %>
-                  <i class="fa fa-heart" aria-hidden="true"></i>
-                  <% end %>
-
-                  <% t=5-h %>
-                  <% t.times do %>
-                  <i class="fa fa-heart-o" aria-hidden="true"></i>
-                  <% end %>
-
-                </h6>
-                <% end %>
-
+          <% h=restaurant.ratings.average('rating').round(0).to_i %>
+          <% h.times do %>
+          <i class="fa fa-heart" aria-hidden="true"></i>
           <% end %>
+
+          <% t=5-h %>
+          <% t.times do %>
+          <i class="fa fa-heart-o" aria-hidden="true"></i>
+          <% end %>
+
+        </h6>
+        <% end %>
+
       </div>
 
     </div>
@@ -140,4 +140,22 @@
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
   async defer></script>
+</div>
+
+<div class="row">
+  <div class="col-md-offset-4 col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h5>Search for a restaurant</h5>
+      </div>
+      <div class="panel-body">
+        <%= search_form_for @q do |f| %>
+        <%= f.label :name_cont, "Title containing" %>
+        <%= f.text_field :name_cont, :class => "form-control", :placeholder => "Enter Name" %>
+        <%= f.submit :class => "btn btn-primary btn-block" %>
+      </div>
+      <% end %>
+    </div>
+
+  </div>
 </div>

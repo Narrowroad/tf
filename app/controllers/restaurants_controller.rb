@@ -3,8 +3,10 @@ require 'json'
 
 class RestaurantsController < ApplicationController
   def index
-    @restaurants = Restaurant.all
-    @restaurants = Restaurant.order("name")
+
+    @q = Restaurant.ransack(params[:q])
+    @restaurants = @q.result(:distinct => true).includes(:ratings, :recommendations)
+
     @restaurants = Kaminari.paginate_array(@restaurants).page(params[:page]).per(4)
   end
 
