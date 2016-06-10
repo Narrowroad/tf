@@ -50,7 +50,7 @@
       <% @restaurant.ratings.each do |rating| %>
 
         <% if rating.comments == nil %>
-      
+
 
         <% else %>
               <% if rating.comments.length > 0 %>
@@ -82,7 +82,7 @@
         position: {lat: <%= @restaurant.lat %>, lng: <%= @restaurant.lng %>},
         map: map,
         title: '<%= @restaurant.name %>',
-        icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+        icon: '/images/tastefind_logo_01.png'
       });
 
       marker.addListener('click', function() {
