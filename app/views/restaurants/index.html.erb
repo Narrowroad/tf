@@ -115,6 +115,7 @@
     var marker_<%= restaurant.id %> = new google.maps.Marker({
       position: {lat: <%= restaurant.lat %>, lng: <%= restaurant.lng %>},
       map: map,
+      animation: google.maps.Animation.DROP,
       title: "<%= restaurant.name %>",
       icon: '/images/tastefind_logo_01.png'
     });

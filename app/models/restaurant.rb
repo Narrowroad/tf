@@ -20,4 +20,11 @@ class Restaurant < ActiveRecord::Base
     self.lng = parsed_data["results"][0]["geometry"]["location"]["lng"].to_s
   end
 
+
+end
+
+class User
+  recommends :restaurants
+
+  # ...
 end
