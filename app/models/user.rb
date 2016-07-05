@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
 has_many :ratings
 has_many :recommendations
 
+recommends :restaurants
+
   # validates :username, presence:true, uniqueness:true
 
   devise :database_authenticatable, :registerable,

@@ -22,9 +22,3 @@ class Restaurant < ActiveRecord::Base
 
 
 end
-
-class User
-  recommends :restaurants
-
-  # ...
-end
