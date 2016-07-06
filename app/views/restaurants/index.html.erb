@@ -46,10 +46,10 @@
         <div class="btn-groupn text-center">
           <h6 class="text-center">Rate this restaurant!</h6>
           <%= link_to "1", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>1), :class => "btn btn-sm btn-primary", :method => :post %>
-          <%= link_to "2", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>2), :class => "btn btn-primary btn-sm", :method => :post %>
-          <%= link_to "3", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>3), :class => "btn btn-primary btn-sm", :method => :post %>
+          <%= link_to "-1", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>-1), :class => "btn btn-primary btn-sm", :method => :post %>
+          <!-- <%= link_to "3", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>3), :class => "btn btn-primary btn-sm", :method => :post %>
           <%= link_to "4", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>4), :class => "btn btn-primary btn-sm", :method => :post %>
-          <%= link_to "5", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>5), :class => "btn btn-primary btn-sm", :method => :post %>
+          <%= link_to "5", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>5), :class => "btn btn-primary btn-sm", :method => :post %> -->
         </div>
         <!-- <a href="/delete_restaurant/<%= restaurant.id %>" class="btn btn-danger" rel="nofollow">Delete Restaurant</a> -->
         <% end %>

@@ -17,7 +17,7 @@ class RatingsController < ApplicationController
     @rating.restaurant_id = params[:restaurant_id]
     @rating.rating = params[:rating]
     @rating.comments = params[:comments]
-
+    current_user.like(params[:restaurant_id])
     if @rating.save
       redirect_to :back, :notice => "Your rating was added! Tastefind is getting smarter!"
     else

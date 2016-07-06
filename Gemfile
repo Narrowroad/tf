@@ -64,5 +64,4 @@ end
 #from recommendable readme
 gem 'sidekiq'
 gem 'sidekiq-middleware'
-
 gem 'recommendable'
