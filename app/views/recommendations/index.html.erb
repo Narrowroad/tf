@@ -1,32 +1,109 @@
-<div class="page-header">
-  <h1>
-    Recommendations
-    <a href="/recommendations/new" class="btn btn-lg btn-success">New Recommendation</a>
-  </h1>
+
+
+<div class="col-md-12 text-center">
+  <h4><%= paginate @recommendations , :window => 2 %> </h4>
+</div>
+
+
+<div class="row">
+  <% @recommendations.each do |restaurant| %>
+  <div class="col-md-3">
+
+    <div class="panel panel-default">
+
+      <div class="panel-heading">
+        <h5>
+          <a href="/restaurants/<%= restaurant.id %>">
+            <%= restaurant.name %>
+          </a>
+          <% restaurant.cost.to_i.times do %>
+          <i class="fa fa-usd" aria-hidden="true"></i>
+          <% end %>
+        </h5>
+      </div>
+
+      <div class="panel-body fixed-panel">
+        <!-- if they have rated the resturant, diplay their rating -->
+
+        <div>
+          <% if current_user.rated?(restaurant) %>
+            <% if current_user.likes?(restaurant)==true %>
+            <h6>You thought this place is pretty great!</h6>
+            <% else  %>
+            <h6>You thogught this place is pretty eh!
+            <% end%>
+
+          <% else %>
+        <!-- If they have not rated the restaurant, give them 1-5 Ratings choices to rate -->
+          <h6 class="text-center btn-group">Rate this restaurant!</h6>
+          <%= link_to "Great", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>1), :class => "btn btn-sm btn-primary text-center", :method => :post %>
+          <%= link_to "Meh", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>-1), :class => "btn btn-sm btn-primary text-center", :method => :post %>
+
+
+        <% end %>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <% end %>
 </div>
 
 <div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped table-hover">
-      <tr>
-        <th>User</th>
-        <th>Restaurant</th>
-        <th>Rating rec</th>
-        <th>Actions</th>
-      </tr>
 
-      <% @recommendations.each do |recommendation| %>
-      <tr>
-        <td><%= recommendation.user_id %></td>
-        <td><%= recommendation.restaurant_id %></td>
-        <td><%= recommendation.rating_rec %></td>
-        <td>
-          <a href="/recommendations/<%= recommendation.id %>" class="btn btn-primary">Show</a>
-          <a href="/recommendations/<%= recommendation.id %>/edit" class="btn btn-warning">Edit</a>
-          <a href="/delete_recommendation/<%= recommendation.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
-        </td>
-      </tr>
+
+  <div class="col-md-12">
+    <div id="map"></div>
+    <script>
+    function initMap() {
+      // initiate a new map
+      var mapDiv = document.getElementById('map');
+      var map = new google.maps.Map(mapDiv);
+
+      // An empty bounds variable for seeting automatic zoom level (bounds of map)
+      var bounds = new google.maps.LatLngBounds();
+
+      <%  @recommendations.each do |restaurant|   %>
+
+      // Make info window for this place
+      var infowindow_<%= restaurant.id %> = new google.maps.InfoWindow({
+        content: "<b><%= restaurant.name %></b>"  +
+        "<p><%= restaurant.address %> </p>" +
+        "<p> Tastefind rating: <%= restaurant.ratings.average('rating') %></p> "
+      });
+
+      // Make marker for this place
+      var marker_<%= restaurant.id %> = new google.maps.Marker({
+        position: {lat: <%= restaurant.lat %>, lng: <%= restaurant.lng %>},
+        map: map,
+        animation: google.maps.Animation.DROP,
+        title: "<%= restaurant.name %>",
+        icon: '/images/tastefind_logo_01.png'
+      });
+
+      // Click to show info window
+      marker_<%= restaurant.id %>.addListener('click', function() {
+        infowindow_<%= restaurant.id %>.open(map, marker_<%= restaurant.id %>);
+      });
+
+      // Rightclick to edit place
+      // marker_<%= restaurant.id %>.addListener('rightclick', function() {
+      //   window.location.href = 'http://localhost:3000/restaurants/<%= restaurant.id %>/edit'
+      //
+      // });
+
+      // Add this marker in map bounds
+      bounds.extend(new google.maps.LatLng(<%= restaurant.lat %>, <%= restaurant.lng %>));
+
       <% end %>
-    </table>
+
+      // Size map to fit bounds
+      map.fitBounds(bounds);
+    };
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+    async defer></script>
   </div>
 </div>

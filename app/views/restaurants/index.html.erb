@@ -24,62 +24,24 @@
 
       <div class="panel-body fixed-panel">
         <!-- if they have rated the resturant, diplay their rating -->
-        <% if restaurant.ratings.pluck(:user_id).include?(current_user.id) %>
+
         <div>
-          <a href="/ratings/<%= restaurant.ratings.where({:user_id => current_user.id}).pluck(:id)[0] %>/edit">
-            <h6>Your Rating:
-              <!-- Show full hearts for rating -->
-              <% restaurant.ratings.where({:user_id => current_user.id}).pluck(:rating)[0].times do %>
-              <i class="fa fa-heart" aria-hidden="true"></i>
-              <% end %>
-              <!-- Show empty hearts to fill in the rest -->
-              <% t=5-restaurant.ratings.where({:user_id => current_user.id}).pluck(:rating)[0] %>
-              <% t.times do %>
-              <i class="fa fa-heart-o" aria-hidden="true"></i>
-              <% end %>
-            </h6>
-          </a>
-        </div>
-        <% else %>
+          <% if current_user.rated?(restaurant) %>
+            <% if current_user.likes?(restaurant)==true %>
+            <h6>You thought this place is pretty great!</h6>
+            <% else  %>
+            <h6>You thogught this place is pretty eh!
+            <% end%>
 
+          <% else %>
         <!-- If they have not rated the restaurant, give them 1-5 Ratings choices to rate -->
-        <div class="btn-groupn text-center">
-          <h6 class="text-center">Rate this restaurant!</h6>
-          <%= link_to "1", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>1), :class => "btn btn-sm btn-primary", :method => :post %>
-          <%= link_to "-1", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>-1), :class => "btn btn-primary btn-sm", :method => :post %>
-          <!-- <%= link_to "3", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>3), :class => "btn btn-primary btn-sm", :method => :post %>
-          <%= link_to "4", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>4), :class => "btn btn-primary btn-sm", :method => :post %>
-          <%= link_to "5", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>5), :class => "btn btn-primary btn-sm", :method => :post %> -->
+          <h6 class="text-center btn-group">Rate this restaurant!</h6>
+          <%= link_to "Great", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>1), :class => "btn btn-sm btn-primary text-center", :method => :post %>
+          <%= link_to "Meh", create_rating_path(:user_id => current_user.id, :restaurant_id => restaurant.id, :rating=>-1), :class => "btn btn-sm btn-primary text-center", :method => :post %>
+
+
+        <% end %>
         </div>
-        <!-- <a href="/delete_restaurant/<%= restaurant.id %>" class="btn btn-danger" rel="nofollow">Delete Restaurant</a> -->
-        <% end %>
-
-
-        <!-- Show average ratings if user hasn't rated the restaurant -->
-
-        <hr>
-        <!-- check to see if restaurant has been rated in database -->
-
-        <% if restaurant.ratings.average('rating') == nil %>
-        <p>
-          This restaurant has not been rated!
-        </p>
-        <% else %>
-        <!-- show average rating -->
-        <h6>Tastefind Rating:
-
-          <% h=restaurant.ratings.average('rating').round(0).to_i %>
-          <% h.times do %>
-          <i class="fa fa-heart" aria-hidden="true"></i>
-          <% end %>
-
-          <% t=5-h %>
-          <% t.times do %>
-          <i class="fa fa-heart-o" aria-hidden="true"></i>
-          <% end %>
-
-        </h6>
-        <% end %>
 
       </div>
 
@@ -91,59 +53,59 @@
 <div class="row">
 
 
-<div class="col-md-12">
-  <div id="map"></div>
-  <script>
-  function initMap() {
-    // initiate a new map
-    var mapDiv = document.getElementById('map');
-    var map = new google.maps.Map(mapDiv);
+  <div class="col-md-12">
+    <div id="map"></div>
+    <script>
+    function initMap() {
+      // initiate a new map
+      var mapDiv = document.getElementById('map');
+      var map = new google.maps.Map(mapDiv);
 
-    // An empty bounds variable for seeting automatic zoom level (bounds of map)
-    var bounds = new google.maps.LatLngBounds();
+      // An empty bounds variable for seeting automatic zoom level (bounds of map)
+      var bounds = new google.maps.LatLngBounds();
 
-    <%  @restaurants.each do |restaurant|   %>
+      <%  @restaurants.each do |restaurant|   %>
 
-    // Make info window for this place
-    var infowindow_<%= restaurant.id %> = new google.maps.InfoWindow({
-      content: "<b><%= restaurant.name %></b>"  +
-      "<p><%= restaurant.address %> </p>" +
-      "<p> Tastefind rating: <%= restaurant.ratings.average('rating') %></p> "
-    });
+      // Make info window for this place
+      var infowindow_<%= restaurant.id %> = new google.maps.InfoWindow({
+        content: "<b><%= restaurant.name %></b>"  +
+        "<p><%= restaurant.address %> </p>" +
+        "<p> Tastefind rating: <%= restaurant.ratings.average('rating') %></p> "
+      });
 
-    // Make marker for this place
-    var marker_<%= restaurant.id %> = new google.maps.Marker({
-      position: {lat: <%= restaurant.lat %>, lng: <%= restaurant.lng %>},
-      map: map,
-      animation: google.maps.Animation.DROP,
-      title: "<%= restaurant.name %>",
-      icon: '/images/tastefind_logo_01.png'
-    });
+      // Make marker for this place
+      var marker_<%= restaurant.id %> = new google.maps.Marker({
+        position: {lat: <%= restaurant.lat %>, lng: <%= restaurant.lng %>},
+        map: map,
+        animation: google.maps.Animation.DROP,
+        title: "<%= restaurant.name %>",
+        icon: '/images/tastefind_logo_01.png'
+      });
 
-    // Click to show info window
-    marker_<%= restaurant.id %>.addListener('click', function() {
-      infowindow_<%= restaurant.id %>.open(map, marker_<%= restaurant.id %>);
-    });
+      // Click to show info window
+      marker_<%= restaurant.id %>.addListener('click', function() {
+        infowindow_<%= restaurant.id %>.open(map, marker_<%= restaurant.id %>);
+      });
 
-    // Rightclick to edit place
-    // marker_<%= restaurant.id %>.addListener('rightclick', function() {
-    //   window.location.href = 'http://localhost:3000/restaurants/<%= restaurant.id %>/edit'
-    //
-    // });
+      // Rightclick to edit place
+      // marker_<%= restaurant.id %>.addListener('rightclick', function() {
+      //   window.location.href = 'http://localhost:3000/restaurants/<%= restaurant.id %>/edit'
+      //
+      // });
 
-    // Add this marker in map bounds
-    bounds.extend(new google.maps.LatLng(<%= restaurant.lat %>, <%= restaurant.lng %>));
+      // Add this marker in map bounds
+      bounds.extend(new google.maps.LatLng(<%= restaurant.lat %>, <%= restaurant.lng %>));
 
-    <% end %>
+      <% end %>
 
-    // Size map to fit bounds
-    map.fitBounds(bounds);
-  };
+      // Size map to fit bounds
+      map.fitBounds(bounds);
+    };
 
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
-  async defer></script>
-</div>
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+    async defer></script>
+  </div>
 </div>
 
 <div class="top-buffer row">

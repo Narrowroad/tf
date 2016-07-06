@@ -1,6 +1,8 @@
 class RecommendationsController < ApplicationController
   def index
     @recommendations = Recommendation.all
+
+    @recommendations = Kaminari.paginate_array(current_user.recommended_restaurants).page(params[:page]).per(4)
   end
 
   def show
