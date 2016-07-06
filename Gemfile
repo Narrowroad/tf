@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem "kaminari"
-
+gem 'redis', '~>3.2'
 
 group :production do
   gem 'pg'
