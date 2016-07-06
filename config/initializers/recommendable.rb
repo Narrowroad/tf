@@ -23,7 +23,7 @@ Recommendable.configure do |config|
   # number to improve Redis memory usage.
   #
   # Default: nil
-  config.nearest_neighbors = 20
+  config.nearest_neighbors = nil
 
   # Like kNN, but also uses some number of most dissimilar users when
   # updating recommendations for a user. Because, hey, disagreements are
