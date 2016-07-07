@@ -4,7 +4,7 @@ Recommendable.configure do |config|
   # Recommendable's connection to Redis.
   #
   # Default: localhost:6379/0
-  config.redis = Redis.new(:host => ENV["REDIS_URL"], :port => 6379, :db => 0)
+  config.redis = Redis.new(:host => ENV["REDIS_URL"])
 
   # A prefix for all keys Recommendable uses.
   #
@@ -23,7 +23,7 @@ Recommendable.configure do |config|
   # number to improve Redis memory usage.
   #
   # Default: nil
-  config.nearest_neighbors = 1
+  config.nearest_neighbors = 2
 
   # Like kNN, but also uses some number of most dissimilar users when
   # updating recommendations for a user. Because, hey, disagreements are
